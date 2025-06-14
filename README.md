@@ -5,7 +5,7 @@ Description
 
 Deirrorz Utilities(**dutils**) is a lightweight Go utility library with commonly used helpers and wrappers for building web services. It includes tools for handling environment variables, JSON responses, JWT tokens, password hashing, and more.
 
-### Features
+## Features
 
 - `env`: Load and validate `.env` files with `godotenv`  
 - `json`: Write structured JSON responses with standard error formatting  
@@ -13,9 +13,8 @@ Deirrorz Utilities(**dutils**) is a lightweight Go utility library with commonly
 - `crypto`: Securely hash and compare passwords using bcrypt  
 - More packages coming soon (e.g., logging, request validation, middleware)
 
----
 
-### Packages
+## Packages
 
 ### `env`
 
