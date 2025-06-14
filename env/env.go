@@ -34,7 +34,7 @@ func GetEnv(key string) (string, error) {
 	return val, nil
 }
 
-// Environment variable MODE must be set in .env to call this function
+// Environment variable MODE must be set in .env to call the func
 // Can be used for dev, prod and staging environments
 func GetMode() (string, error) {
 	mode, err := GetEnv("MODE")
@@ -55,7 +55,7 @@ func GetMode() (string, error) {
 	return "", fmt.Errorf("invalid environment mode: %s", mode)
 }
 
-// A wrapper func aroung os.Environ, handling errors more precisely
+// A wrapper func around os.Environ, handling errors more precisely
 func GetAllEnv() ([]string, error) {
 	kvps := os.Environ()
 	if len(kvps) == 0 {
