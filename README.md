@@ -41,3 +41,52 @@ hash, err := crypto.HashPassword("my-secret")
 err := crypto.ComparePassword(hash, "my-secret")
 ```
 
+### `jwt`
+
+JWT creation, validation, and cookie management
+
+```go
+import "github.com/Deirror/dutils/jwt"
+
+jwt.SetJWTCookie(w, token)
+jwt.ClearJWTCookie(w)
+
+token, err := jwt.ValidateJWT(tokenString)
+```
+
+### `json`
+
+(Coming soon) Standardized JSON error and response writers
+
+## Installation
+```bash
+go get github.com/Deirror/dutils@latest
+```
+
+Or use a specific version:
+
+```bash
+go get github.com/Deirror/dutils@v0.1.0
+```
+
+## Usage
+
+You can import only the packages you need:
+
+```go
+import (
+    "github.com/Deirror/dutils/env"
+    "github.com/Deirror/dutils/jwt"
+)
+```
+
+## Roadmap
+
+- Logging wrapper (Zap/Slog)
+- JSON response helpers
+- Middleware toolkit
+- Request validation
+
+## Contributing
+
+Contributions are welcome 🤝! Please open an issue or pull request
