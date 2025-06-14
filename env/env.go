@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	DEV     = "dev"
-	PROD    = "prod"
-	STAGING = "staging"
+	Dev     = "dev"
+	Prod    = "prod"
+	Staging = "staging"
 )
 
 // Loads environment variables from the given files
@@ -43,7 +43,7 @@ func GetMode() (string, error) {
 	}
 
 	switch strings.ToLower(mode) {
-	case DEV, PROD, STAGING:
+	case Dev, Prod, Staging:
 		return mode, nil
 	default:
 		return mode, fmt.Errorf("invalid environment mode: %s", mode)
