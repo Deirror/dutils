@@ -3,7 +3,7 @@
 Description
 -
 
-Deirrorz Utilities(**dutils**) is a lightweight Go utility library with commonly used helpers and wrappers for building web services. It includes tools for handling environment variables, JSON responses, JWT tokens, password hashing, and more.
+***Deirrorz Utilities***(**dutils**) is a lightweight Go utility library with commonly used helpers and wrappers for building web services. It includes tools for handling environment variables, JSON responses, JWT tokens, password hashing, and more.
 
 ## Features
 
