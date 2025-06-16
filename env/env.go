@@ -15,9 +15,9 @@ const (
 	Staging = "staging"
 )
 
-// Loads environment variables from the given files
-// It is intented to be used in development mode
-// If in dev mode, make sure to load the env vars first, then call other funcs
+// Loads environment variables from the given files.
+// It is intented to be used in development mode.
+// If in dev mode, make sure to load the env vars first, then call other funcs.
 func LoadEnv(filenames ...string) error {
 	if err := godotenv.Load(filenames...); err != nil {
 		return fmt.Errorf("error loading .env file: %v", err)
@@ -25,7 +25,7 @@ func LoadEnv(filenames ...string) error {
 	return nil
 }
 
-// A wrapper func around os.Getenv, but handles error with more text
+// A wrapper func around os.Getenv, but handles error with more text.
 func GetEnv(key string) (string, error) {
 	val := os.Getenv(key)
 	if val == "" {
@@ -34,8 +34,8 @@ func GetEnv(key string) (string, error) {
 	return val, nil
 }
 
-// Environment variable MODE must be set in .env to call the func
-// Can be used for dev, prod and staging environments
+// Environment variable MODE must be set in .env to call the func.
+// Can be used for dev, prod and staging environments.
 func GetMode() (string, error) {
 	mode, err := GetEnv("MODE")
 	if err != nil {
@@ -50,7 +50,7 @@ func GetMode() (string, error) {
 	}
 }
 
-// A wrapper func around os.Environ, handling errors more precisely
+// A wrapper func around os.Environ, handling errors more precisely.
 func GetAllEnv() ([]string, error) {
 	kvps := os.Environ()
 	if len(kvps) == 0 {
@@ -59,7 +59,7 @@ func GetAllEnv() ([]string, error) {
 	return kvps, nil
 }
 
-// Same as GetEnv, but with default value
+// Same as GetEnv, but with default value.
 func GetEnvOrDefault(key, defaultVal string) string {
 	val := os.Getenv(key)
 	if val == "" {
@@ -68,8 +68,8 @@ func GetEnvOrDefault(key, defaultVal string) string {
 	return val
 }
 
-// Gets key's value, calling GetEnv and parses to bool
-// Assumes it is in a specific format - text or a binary representation
+// Gets key's value, calling GetEnv and parses to bool.
+// Assumes it is in a specific format - text or a binary representation.
 func ParseEnvBool(key string) (bool, error) {
 	val, err := GetEnv(key)
 	if err != nil {
@@ -86,7 +86,7 @@ func ParseEnvBool(key string) (bool, error) {
 	}
 }
 
-// Gets and parses key's value to int
+// Gets and parses key's value to int.
 func ParseEnvInt(key string) (int, error) {
 	val, err := GetEnv(key)
 	if err != nil {
