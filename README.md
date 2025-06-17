@@ -80,13 +80,6 @@ import (
 )
 ```
 
-## Roadmap
-
-- Logging wrapper (Zap/Slog)
-- JSON response helpers
-- Middleware toolkit
-- Request validation
-
 ## Contributing
 
 Contributions are welcome 🤝! Please open an issue or pull request
