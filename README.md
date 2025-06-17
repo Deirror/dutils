@@ -7,56 +7,130 @@ Description
 
 ## Features
 
-- `env`: Load and validate `.env` files with `godotenv`  
-- `json`: Write structured JSON responses with standard error formatting  
-- `jwt`: Sign, validate, and manage JWT tokens (including cookie helpers)  
-- `crypto`: Securely hash and compare passwords using bcrypt  
-- More packages coming soon (e.g., logging, request validation, middleware)
-
+- `cfg`: Strongly typed config structs with fluent .With... chaining
+- `crypto`: Secure password hashing and comparison with bcrypt
+- `env`: Load .env files and manage environment-specific behavior
+- `http`: Helpers for Go 1.22+ r.PathValue, query parsing, etc.
+- `jwt`: Full JWT token generation, validation, and cookie integration
+- `logger`: Simple slog-based structured logging setup
+- `json`: (Coming soon) Standardized JSON response & error writers
 
 ## Packages
 
+### `cfg`
+
+Typed config structs that can be loaded from environment variables and modified via fluent .With... chaining.
+
+Supported configs:
+- cfg.BlobConfig
+- cfg.PaymentConfig
+- cfg.DBConfig
+- cfg.JWTConfig
+- cfg.KVConfig
+- cfg.MailerConfig
+- cfg.OAuthConfig
+
+```go
+import "github.com/Deirror/dutils/cfg"
+
+cfg, err := cfg.LoadEnvMailerConfig()
+// .With... pattern to override specific fields
+cfg.WithHost("smtp.newhost.com").WithPort("465")
+```
+
 ### `env`
 
-Helpers for managing environment variables
+Helpers for loading environment variables safely.
 
 ```go
 import "github.com/Deirror/dutils/env"
 
-err := env.InitEnv(".env") // Load .env only if not in production
-
-mode, err := env.GetMode() // "dev" or "prod"
+_ = env.InitEnv(".env") // Load only if not in production
+mode, _ := env.GetMode() // "dev" or "prod"
 
 val, err := env.GetEnv("DATABASE_URL")
 ```
 
 ### `crypto`
 
-Password hashing with bcrypt
+Secure password hashing and verification.
 
 ```go
 import "github.com/Deirror/dutils/crypto"
 
-hash, err := crypto.HashPassword("my-secret")
-err := crypto.ComparePassword(hash, "my-secret")
+hash, err := crypto.HashPassword("password123")
+err = crypto.ComparePassword(hash, "password123")
+```
+
+### `http`
+
+Simplified helpers for parsing Go 1.22+ path and query values.
+
+```go
+import "github.com/Deirror/dutils/http"
+
+id, err := http.QueryInt(r, "id")         // ?id=10 → int
+slug := http.PathValue(r, "slug")         // /blog/{slug}
 ```
 
 ### `jwt`
 
-JWT creation, validation, and cookie management
+JWT handling with token signing, validation, and cookie management.
 
 ```go
 import "github.com/Deirror/dutils/jwt"
 
-jwt.SetJWTCookie(w, token)
-jwt.ClearJWTCookie(w)
+jwtHandler := jwt.NewJWT(jwtCfg)
 
-token, err := jwt.ValidateJWT(tokenString)
+token, err := jwtHandler.GenerateToken("user@example.com")
+
+jwtHandler.SetCookie(w, token)
+
+email, err := jwtHandler.ValidateJWT(tokenFromRequest)
+
+jwt.SetJWTCookie(w, token)  // raw cookie helper
+jwt.ClearJWTCookie(w)       // clear cookie
+```
+
+### `logger`
+
+Minimal structured logger using Go's standard slog.
+
+```go
+import "github.com/Deirror/dutils/logger"
+
+log := logger.Init("dev") // or "prod"
+log.Info("app started", "version", "v1.0.0")
 ```
 
 ### `json`
 
-(Coming soon) Standardized JSON error and response writers
+Helpers for reading and writing structured JSON in handlers and services.
+
+```go
+import "github.com/Deirror/dutils/json"
+```
+- Response Writers
+- 
+```go
+err := json.WriteJSON(w, http.StatusOK, myData) // Marshal and write JSON
+err := json.SendErrorJSON(w, http.StatusBadRequest, "invalid input") // {"error": "..."}
+```
+
+- Request Parsers
+
+```go
+var data MyStruct
+err := json.ParseJSONInto(r.Body, &data)
+
+data, err := json.ParseJSON[MyStruct](r.Body) // Generics-based shortcut
+```
+
+- Encoder (manual streams)
+
+```go
+err := json.EncodeJSON(w, myStruct) // Stream JSON to any io.Writer
+```
 
 ## Installation
 ```bash
