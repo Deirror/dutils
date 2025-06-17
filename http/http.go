@@ -1,6 +1,8 @@
 package http
 
-import "net/http"
+import (
+	"net/http"
+)
 
 // GetPathParam returns the path parameter by key as a string.
 // If the parameter does not exist, returns empty string.
