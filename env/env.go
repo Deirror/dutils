@@ -5,6 +5,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -27,8 +28,8 @@ func LoadEnv(filenames ...string) error {
 
 // A wrapper func around os.Getenv, but handles error with more text.
 func GetEnv(key string) (string, error) {
-	val := os.Getenv(key)
-	if val == "" {
+	val, ok := os.LookupEnv(key)
+	if !ok {
 		return "", fmt.Errorf("environment variable %s not set", key)
 	}
 	return val, nil
@@ -98,4 +99,19 @@ func ParseEnvInt(key string) (int, error) {
 		return 0, fmt.Errorf("invalid integer value for %s: %s", key, val)
 	}
 	return i, nil
+}
+
+// Gets and parses key's value to duration.
+func ParseEnvTimeDuration(key string) (time.Duration, error) {
+	val, err := GetEnv(key)
+	if err != nil {
+		return 0, err
+	}
+
+	dur, err := time.ParseDuration(val)
+	if err != nil {
+		return 0, fmt.Errorf("invalid duration value for %s: %s", key, val)
+	}
+
+	return dur, nil
 }
