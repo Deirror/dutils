@@ -2,10 +2,11 @@ package cfg
 
 import "github.com/Deirror/dutils/env"
 
+// BlobConfig holds the configuration required to connect to a blob storage provider.
 type BlobConfig struct {
-	ProjectURL string
-	APIKey     string
-	Bucket     string
+	ProjectURL string // Base project URL of the blob storage service
+	APIKey     string // API key for authentication with the blob storage provider
+	Bucket     string // Target bucket name for storing or retrieving objects
 }
 
 func NewBlobConfig(url, apiKey, bucket string) *BlobConfig {
@@ -16,6 +17,8 @@ func NewBlobConfig(url, apiKey, bucket string) *BlobConfig {
 	}
 }
 
+// LoadEnvBlobConfig reads the BlobConfig values from environment variables:
+// BLOB_PROJECT_URL, BLOB_API_KEY, and BLOB_BUCKET.
 func LoadEnvBlobConfig() (*BlobConfig, error) {
 	url, err := env.GetEnv("BLOB_PROJECT_URL")
 	if err != nil {
@@ -35,17 +38,20 @@ func LoadEnvBlobConfig() (*BlobConfig, error) {
 	return NewBlobConfig(url, apiKey, bucket), nil
 }
 
+// WithProjectURL sets the ProjectURL and returns the updated BlobConfig.
 func (cfg *BlobConfig) WithProjectURL(url string) *BlobConfig {
 	cfg.ProjectURL = url
 	return cfg
 }
 
+// WithAPIKey sets the APIKey and returns the updated BlobConfig.
 func (cfg *BlobConfig) WithAPIKey(apiKey string) *BlobConfig {
-	cfg.ProjectURL = apiKey
+	cfg.APIKey = apiKey
 	return cfg
 }
 
+// WithBucket sets the Bucket and returns the updated BlobConfig.
 func (cfg *BlobConfig) WithBucket(bucket string) *BlobConfig {
-	cfg.ProjectURL = bucket
+	cfg.Bucket = bucket
 	return cfg
 }

@@ -4,7 +4,7 @@ import "net/http"
 
 // Simple error response struct with json notation.
 type ErrorResponse struct {
-	Error string `json:"error"`
+	Error string `json:"error"` // Error message with json tag
 }
 
 // Sends structured json error.

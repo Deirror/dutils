@@ -9,10 +9,11 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+// JWT handles JWT token creation, validation, and cookie management.
 type JWT struct {
-	CookieName string
-	Secret     string
-	TokenTTL   time.Duration
+	CookieName string        // Name of the cookie to store the JWT
+	Secret     string        // Secret key used to sign the JWT
+	TokenTTL   time.Duration // Token time-to-live duration
 }
 
 func NewJWT(jwtCfg *cfg.JWTConfig) *JWT {
@@ -23,6 +24,7 @@ func NewJWT(jwtCfg *cfg.JWTConfig) *JWT {
 	}
 }
 
+// GenerateToken creates a signed JWT token containing the user's email and expiration.
 func (j *JWT) GenerateToken(email string) (string, error) {
 	claims := jwt.MapClaims{
 		"email": email,
@@ -33,6 +35,7 @@ func (j *JWT) GenerateToken(email string) (string, error) {
 	return token.SignedString([]byte(j.Secret))
 }
 
+// SetCookie sets an HTTP-only, secure cookie with the JWT token on the response writer.
 func (j *JWT) SetCookie(w http.ResponseWriter, token string) {
 	cookie := &http.Cookie{
 		Name:     j.CookieName,
@@ -46,23 +49,21 @@ func (j *JWT) SetCookie(w http.ResponseWriter, token string) {
 	http.SetCookie(w, cookie)
 }
 
+// ValidateJWT parses and validates the JWT token string.
+// Returns the email claim if valid, or an error otherwise.
 func (j *JWT) ValidateJWT(tokenString string) (string, error) {
-	// Parse the JWT
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		// Check signing method
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return j.Secret, nil
+		return []byte(j.Secret), nil
 	})
 
 	if err != nil {
 		return "", err
 	}
 
-	// Validate claims and extract email
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		// Check expiry
 		exp, ok := claims["exp"].(float64)
 		if !ok {
 			return "", fmt.Errorf("missing exp claim")
@@ -71,7 +72,6 @@ func (j *JWT) ValidateJWT(tokenString string) (string, error) {
 			return "", fmt.Errorf("token has expired")
 		}
 
-		// Extract email claim
 		email, ok := claims["email"].(string)
 		if !ok || email == "" {
 			return "", fmt.Errorf("email claim missing or invalid")
