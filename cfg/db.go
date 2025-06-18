@@ -8,14 +8,16 @@ import (
 
 // DBConfig holds the configuration parameters for a database connection.
 type DBConfig struct {
+	Driver      string        // Driver is used to set db engine (postgres, mysql and so on)
 	DSN         string        // DSN is used to connect to the database
 	PoolSize    uint8         // Maximum number of open connections in the pool
 	MaxIdle     uint8         // Maximum number of idle connections in the pool
 	MaxLifetime time.Duration // Maximum lifetime of a connection before it's recycled
 }
 
-func NewDBConfig(dsn string, size, maxIdle uint8, maxLT time.Duration) *DBConfig {
+func NewDBConfig(driver, dsn string, size, maxIdle uint8, maxLT time.Duration) *DBConfig {
 	return &DBConfig{
+		Driver:      driver,
 		DSN:         dsn,
 		PoolSize:    size,
 		MaxIdle:     maxIdle,
@@ -26,6 +28,11 @@ func NewDBConfig(dsn string, size, maxIdle uint8, maxLT time.Duration) *DBConfig
 // LoadEnvDBConfig loads the database configuration from environment variables.
 // Required variables: DB_DSN, DB_POOL_SIZE, DB_MAX_IDLE, DB_MAX_LIFETIME.
 func LoadEnvDBConfig() (*DBConfig, error) {
+	driver, err := env.GetEnv("DB_DRIVER")
+	if err != nil {
+		return nil, err
+	}
+
 	dsn, err := env.GetEnv("DB_DSN")
 	if err != nil {
 		return nil, err
@@ -46,7 +53,7 @@ func LoadEnvDBConfig() (*DBConfig, error) {
 		return nil, err
 	}
 
-	return NewDBConfig(dsn, uint8(size), uint8(maxIdle), maxLT*time.Second), nil
+	return NewDBConfig(driver, dsn, uint8(size), uint8(maxIdle), maxLT*time.Second), nil
 }
 
 // WithPoolSize sets the PoolSize and returns the updated DBConfig.
@@ -70,5 +77,11 @@ func (cfg *DBConfig) WithMaxLifetime(maxTL time.Duration) *DBConfig {
 // WithDSN sets the DSN string and returns the updated DBConfig.
 func (cfg *DBConfig) WithDSN(dsn string) *DBConfig {
 	cfg.DSN = dsn
+	return cfg
+}
+
+// WithDriver sets the Driver string and returns the updated DBConfig.
+func (cfg *DBConfig) WithDriver(driver string) *DBConfig {
+	cfg.Driver = driver
 	return cfg
 }
