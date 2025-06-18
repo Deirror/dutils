@@ -139,15 +139,15 @@ err := json.EncodeJSON(w, myStruct) // Stream JSON to any io.Writer
 A wrapper struct for sql.DB, which has Close and Ping funcs.
 
 ```go
-    db, err := Connect(cfg.Driver, cfg.DSN) // Uses db config
-	if err != nil {
-		return nil, err
-	}
+db, err := Connect(cfg.Driver, cfg.DSN) // Uses db config
+if err != nil {
+    return nil, err
+}
 
-    // Sets parameters to connection pool
-	db.SetMaxOpenConns(int(cfg.PoolSize))
-	db.SetMaxIdleConns(int(cfg.MaxIdle))
-	db.SetConnMaxLifetime(cfg.MaxLifetime)
+// Sets parameters to connection pool
+db.SetMaxOpenConns(int(cfg.PoolSize))
+db.SetMaxIdleConns(int(cfg.MaxIdle))
+db.SetConnMaxLifetime(cfg.MaxLifetime)
 ```
 
 ## Installation
