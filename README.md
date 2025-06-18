@@ -13,7 +13,8 @@ Description
 - `http`: Helpers for Go 1.22+ r.PathValue, query parsing, etc.
 - `jwt`: Full JWT token generation, validation, and cookie integration
 - `logger`: Simple slog-based structured logging setup
-- `json`: (Coming soon) Standardized JSON response & error writers
+- `json`: Standardized JSON response and error writers
+- `db`: Wrapper for sql.DB with extended funcs
 
 ## Packages
 
@@ -110,8 +111,9 @@ Helpers for reading and writing structured JSON in handlers and services.
 ```go
 import "github.com/Deirror/dutils/json"
 ```
+
 - Response Writers
-- 
+  
 ```go
 err := json.WriteJSON(w, http.StatusOK, myData) // Marshal and write JSON
 err := json.SendErrorJSON(w, http.StatusBadRequest, "invalid input") // {"error": "..."}
@@ -130,6 +132,22 @@ data, err := json.ParseJSON[MyStruct](r.Body) // Generics-based shortcut
 
 ```go
 err := json.EncodeJSON(w, myStruct) // Stream JSON to any io.Writer
+```
+
+### `db`
+
+A wrapper struct for sql.DB, which has Close and Ping funcs.
+
+```go
+    db, err := Connect(cfg.Driver, cfg.DSN) // Uses db config
+	if err != nil {
+		return nil, err
+	}
+
+    // Sets parameters to connection pool
+	db.SetMaxOpenConns(int(cfg.PoolSize))
+	db.SetMaxIdleConns(int(cfg.MaxIdle))
+	db.SetConnMaxLifetime(cfg.MaxLifetime)
 ```
 
 ## Installation
