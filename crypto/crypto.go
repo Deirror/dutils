@@ -9,7 +9,6 @@ func HashPassword(password string) (string, error) {
 }
 
 // Checks if passwords have equal hash
-func CheckPasswordHash(hash, password string) (bool, error) {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil, err
+func CheckPasswordHash(hash, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }
