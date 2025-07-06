@@ -9,7 +9,7 @@ import (
 // SQLDatabase wraps a standard sql.DB instance and provides
 // lifecycle management for SQL database connections.
 type SQLDatabase struct {
-	Db *sql.DB
+	db *sql.DB
 }
 
 // NewSQLDatabase initializes and returns a new SQLDatabase instance
@@ -28,15 +28,19 @@ func NewSQLDatabase(cfg *cfg.DBConfig) (*SQLDatabase, error) {
 	db.SetConnMaxLifetime(cfg.MaxLifetime)
 
 	return &SQLDatabase{
-		Db: db,
+		db: db,
 	}, nil
+}
+
+func (db *SQLDatabase) DB() *sql.DB {
+	return db.db
 }
 
 // Close closes the underlying database connection.
 // It is safe to call Close multiple times; if the DB is already nil, it does nothing.
 func (db *SQLDatabase) Close() error {
-	if db.Db != nil {
-		return db.Db.Close()
+	if db.db != nil {
+		return db.db.Close()
 	}
 	return nil
 }
@@ -61,5 +65,5 @@ func Connect(driver, dsn string) (*sql.DB, error) {
 // Ping verifies that the database connection is still alive.
 // It is useful for health checks or readiness probes.
 func (db *SQLDatabase) Ping() error {
-	return db.Db.Ping()
+	return db.db.Ping()
 }
