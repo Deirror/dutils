@@ -32,6 +32,7 @@ func NewSQLDatabase(cfg *cfg.DBConfig) (*SQLDatabase, error) {
 	}, nil
 }
 
+// DB returns a copy of the raw db
 func (db *SQLDatabase) DB() *sql.DB {
 	return db.db
 }
