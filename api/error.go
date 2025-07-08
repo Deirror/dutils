@@ -19,6 +19,10 @@ func NewErrorResp(status int, clientMsg, serverMsg string) *ErrorResp {
 	}
 }
 
+func NewClientErrorResp(status int, clientMsg string) *ErrorResp {
+	return NewErrorResp(status, clientMsg, "")
+}
+
 // Implementation func of error interface.
 func (e *ErrorResp) Error() string {
 	return e.ClientMsg
