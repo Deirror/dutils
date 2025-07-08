@@ -6,20 +6,22 @@ import (
 
 // Simple error response struct with json notation.
 type ErrorResp struct {
-	Status int    `json:"status"`  // HTTP status code with a json tag
-	Msg    string `json:"message"` // Human-readable message with a json tag
+	Status    int    `json:"status"`         // HTTP status code with a json tag
+	ClientMsg string `json:"client_message"` // Human-readable message with a json tag
+	ServerMsg string `json:"-"`              // Server side message, for logging purposes
 }
 
-func NewErrorResp(status int, msg string) *ErrorResp {
+func NewErrorResp(status int, clientMsg, serverMsg string) *ErrorResp {
 	return &ErrorResp{
-		Status: status,
-		Msg:    msg,
+		Status:    status,
+		ClientMsg: clientMsg,
+		ServerMsg: serverMsg,
 	}
 }
 
 // Implementation func of error interface.
 func (e *ErrorResp) Error() string {
-	return e.Msg
+	return e.ClientMsg
 }
 
 // Convertion from error to ErrorResp if possbile.
