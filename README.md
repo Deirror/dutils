@@ -15,6 +15,7 @@ Description
 - `logger`: Simple slog-based structured logging setup
 - `json`: Standardized JSON response and error writers
 - `db`: Wrapper for sql.DB with extended funcs
+- `templ`: Reusable templ components for html
 
 ## Packages
 
