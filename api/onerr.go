@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"net/http"
 	"strings"
 
@@ -8,17 +9,17 @@ import (
 )
 
 // Can be used in Wrap func as default one
-func DefaultErrorHandler(w http.ResponseWriter, r *http.Request, errResp *ErrorResp) {
+func DefaultErrorHandler(ctx context.Context, w http.ResponseWriter, r *http.Request, errResp *ErrorResp) {
 	accept := r.Header.Get("Accept")
 	if strings.Contains(accept, "text/html") {
-		HTMLErrorHandler(w, r, errResp)
+		HTMLErrorHandler(ctx, w, r, errResp)
 	} else {
-		JSONErrorHandler(w, r, errResp)
+		JSONErrorHandler(ctx, w, r, errResp)
 	}
 }
 
 // Default func for json error handling.
-func JSONErrorHandler(w http.ResponseWriter, r *http.Request, errResp *ErrorResp) {
+func JSONErrorHandler(ctx context.Context, w http.ResponseWriter, r *http.Request, errResp *ErrorResp) {
 	if errResp == nil {
 		errResp = NewErrorResp(http.StatusInternalServerError, "internal server error", "errResp is nil")
 	}
@@ -26,7 +27,7 @@ func JSONErrorHandler(w http.ResponseWriter, r *http.Request, errResp *ErrorResp
 }
 
 // Default func for html error handling, with examplary html code.
-func HTMLErrorHandler(w http.ResponseWriter, r *http.Request, errResp *ErrorResp) {
+func HTMLErrorHandler(ctx context.Context, w http.ResponseWriter, r *http.Request, errResp *ErrorResp) {
 	if errResp == nil {
 		errResp = NewErrorResp(http.StatusInternalServerError, "internal server error", "errResp is nil")
 	}

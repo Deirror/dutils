@@ -11,7 +11,7 @@ import (
 type HandlerFunc func(context.Context, http.ResponseWriter, *http.Request) *ErrorResp
 
 // Custom type of error handler func mostly used for custom transport logic.
-type ErrorHandlerFunc func(http.ResponseWriter, *http.Request, *ErrorResp)
+type ErrorHandlerFunc func(context.Context, http.ResponseWriter, *http.Request, *ErrorResp)
 
 // A wrapper func for handling errors from the called handler funcs.
 // Uses custom func which handles error response.
@@ -25,7 +25,7 @@ func Wrap(h HandlerFunc, onErr ErrorHandlerFunc) http.HandlerFunc {
 		ctx := r.Context()
 		ctx = context.WithValue(ctx, ReqIDKey, uuid.NewString())
 		if errResp := h(ctx, w, r); errResp != nil {
-			onErr(w, r, errResp)
+			onErr(ctx, w, r, errResp)
 		}
 	}
 }
