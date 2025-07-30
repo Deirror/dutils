@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/Deirror/dutils/cfg"
+	_ "github.com/lib/pq"
 )
 
 // SQLDatabase wraps a standard sql.DB instance and provides
