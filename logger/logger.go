@@ -22,8 +22,35 @@ func InitLogger(mode string) *slog.Logger {
 	return logger
 }
 
-// Wrapper func, used for dev/prod-ready logging of a service.
-func LogService(
+// LogFunc logs a function call with optional extra attributes.
+// It records the request ID from context and any error passed.
+// Timing is NOT recorded here.
+// Use this when you only want to log function entry or results without measuring duration.
+func LogFunc(
+	ctx context.Context,
+	logger *slog.Logger,
+	funcName string,
+	err error,
+	extraAttrs ...slog.Attr,
+) {
+	attrs := []slog.Attr{
+		slog.Any(api.ReqIDKey, ctx.Value(api.ReqIDKey)),
+		slog.Any("error", err),
+	}
+	attrs = append(attrs, extraAttrs...)
+
+	level := slog.LevelInfo
+	if err != nil {
+		level = slog.LevelError
+	}
+
+	logger.LogAttrs(ctx, level, funcName, attrs...)
+}
+
+// LogFuncWithTiming logs a function call including the elapsed time since `begin`.
+// It records the request ID from context, the duration, any error, and optional extra attributes.
+// Use this when you want to measure and log the time taken by a function.
+func LogFuncWithTiming(
 	ctx context.Context,
 	logger *slog.Logger,
 	funcName string,
@@ -44,25 +71,4 @@ func LogService(
 	}
 
 	logger.LogAttrs(ctx, level, funcName, attrs...)
-}
-
-// Wrapper func, used for logging handler func errors.
-func LogHandlerError(
-	ctx context.Context,
-	logger *slog.Logger,
-	path string,
-	err error,
-	extraAttrs ...slog.Attr,
-) {
-	if err == nil {
-		return
-	}
-
-	attrs := []slog.Attr{
-		slog.Any(api.ReqIDKey, ctx.Value(api.ReqIDKey)),
-		slog.Any("error", err),
-	}
-	attrs = append(attrs, extraAttrs...)
-
-	logger.LogAttrs(ctx, slog.LevelError, path, attrs...)
 }

@@ -36,16 +36,22 @@ func (j *JWT) GenerateToken(email string) (string, error) {
 }
 
 // SetCookie sets an HTTP-only, secure cookie with the JWT token on the response writer.
-func (j *JWT) SetCookie(w http.ResponseWriter, token string) {
+// If a domain is provided, the cookie will be accessible across subdomains.
+func (j *JWT) SetCookie(w http.ResponseWriter, token string, domain ...string) {
 	cookie := &http.Cookie{
 		Name:     j.CookieName,
 		Value:    token,
 		Path:     "/",
 		HttpOnly: true,
 		Secure:   true,
-		SameSite: http.SameSiteStrictMode,
+		SameSite: http.SameSiteNoneMode,
 		Expires:  time.Now().Add(j.TokenTTL),
 	}
+
+	if len(domain) > 0 && domain[0] != "" {
+		cookie.Domain = domain[0]
+	}
+
 	http.SetCookie(w, cookie)
 }
 
