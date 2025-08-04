@@ -1,4 +1,4 @@
-package oauth
+package google
 
 import (
 	"github.com/Deirror/dutils/cfg"

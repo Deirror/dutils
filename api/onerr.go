@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	djson "github.com/Deirror/dutils/json"
+	json "github.com/Deirror/dutils/json"
 )
 
 // Can be used in Wrap func as default one
@@ -23,7 +23,7 @@ func JSONErrorHandler(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	if errResp == nil {
 		errResp = NewErrorResp(http.StatusInternalServerError, "internal server error", "errResp is nil")
 	}
-	djson.WriteJSON(w, errResp.Status, errResp)
+	json.Write(w, errResp.Status, errResp)
 }
 
 // Default func for html error handling, with examplary html code.

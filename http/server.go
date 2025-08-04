@@ -3,11 +3,11 @@ package http
 import (
 	"net/http"
 
-	cfg "github.com/Deirror/dutils/cfg/http"
+	"github.com/Deirror/dutils/cfg"
 )
 
-// A wrapper func for creating a http server with a config and handler/router.
-func NewHTTPServerWithConfig(cfg *cfg.HTTPServerConfig, h http.Handler) *http.Server {
+// NewStdServerFromConfig creates a standard HTTP server using the provided configuration and handler.
+func NewStdServerFromConfig(cfg *cfg.ServerConfig, h http.Handler) *http.Server {
 	return &http.Server{
 		Addr:         cfg.Port,
 		Handler:      h,
