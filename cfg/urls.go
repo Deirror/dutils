@@ -2,6 +2,8 @@ package cfg
 
 import "github.com/Deirror/dutils/env"
 
+type MultiEnvExternalURLConfig = MultiEnvConfig[ExternalURLConfig]
+
 // ExternalURLConfig holds configuration for an external URL.
 type ExternalURLConfig struct {
 	URL string // External service URL

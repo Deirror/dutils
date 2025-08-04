@@ -2,6 +2,8 @@ package cfg
 
 import "github.com/Deirror/dutils/env"
 
+type MultiEnvKVConfig = MultiEnvConfig[KVConfig]
+
 var kvSuffixes = []string{
 	"KV_STORE_URL",
 }

@@ -2,6 +2,8 @@ package cfg
 
 import "github.com/Deirror/dutils/env"
 
+type MultiEnvBlobConfig = MultiEnvConfig[BlobConfig]
+
 var blobSuffixes = []string{"BLOB_PROJECT_URL", "BLOB_API_KEY", "BLOB_BUCKET"}
 
 // BlobConfig holds the configuration required to connect to a blob storage provider.

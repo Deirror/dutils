@@ -2,6 +2,8 @@ package cfg
 
 import "github.com/Deirror/dutils/env"
 
+type MultiEnvMailerConfig = MultiEnvConfig[MailerConfig]
+
 var mailerSuffixes = []string{
 	"MAILER_HOST",
 	"MAILER_PORT",

@@ -6,6 +6,8 @@ import (
 	"github.com/Deirror/dutils/env"
 )
 
+type MultiEnvDBConfig = MultiEnvConfig[DBConfig]
+
 var dbSuffixes = []string{
 	"DB_DRIVER",
 	"DB_DSN",

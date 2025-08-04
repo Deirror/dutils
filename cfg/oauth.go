@@ -2,6 +2,8 @@ package cfg
 
 import "github.com/Deirror/dutils/env"
 
+type MultiEnvOAuthConfig = MultiEnvConfig[OAuthConfig]
+
 var oauthSuffixes = []string{
 	"OAUTH_CLIENT_ID",
 	"OAUTH_CLIENT_SECRET",

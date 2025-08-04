@@ -6,6 +6,8 @@ import (
 	"github.com/Deirror/dutils/env"
 )
 
+type MultiEnvServerConfig = MultiEnvConfig[ServerConfig]
+
 var serverSuffixes = []string{
 	"SERVER_PORT",
 	"SERVER_READ_TIMEOUT",

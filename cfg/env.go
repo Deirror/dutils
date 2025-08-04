@@ -2,6 +2,8 @@ package cfg
 
 import "github.com/Deirror/dutils/env"
 
+type MultiEnvEnvConfig = MultiEnvConfig[EnvConfig]
+
 var envSuffixes = []string{"MODE", "DOMAIN"}
 
 // EnvConfig holds basic environment configuration like mode and domain.

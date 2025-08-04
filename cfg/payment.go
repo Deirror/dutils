@@ -2,6 +2,8 @@ package cfg
 
 import "github.com/Deirror/dutils/env"
 
+type MultiEnvPaymentConfig = MultiEnvConfig[PaymentConfig]
+
 var paymentSuffixes = []string{
 	"PAYMENT_API_KEY",
 	"PAYMENT_SECRET_KEY",
