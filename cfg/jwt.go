@@ -6,7 +6,7 @@ import (
 	"github.com/Deirror/dutils/env"
 )
 
-type MultiEnvJWTBlobConfig = MultiEnvConfig[JWTConfig]
+type MultiEnvJWTConfig = MultiEnvConfig[JWTConfig]
 
 var jwtSuffixes = []string{"JWT_SECRET", "JWT_COOKIE_NAME", "JWT_TOKEN_TTL"}
 
