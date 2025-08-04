@@ -13,23 +13,15 @@ import (
 type EnvGroupMap map[string]map[string]string
 
 // Extracts all env vars ending with the suffixes.
-func LoadEnvGroups(suffixes []string) (EnvGroupMap, error) {
+func LoadEnvGroups(suffixes []string, filenames ...string) (EnvGroupMap, error) {
 	grouped := make(EnvGroupMap)
 
-	envVars, err := env.GetAllEnv()
+	envVars, err := env.ReadAllEnvs(filenames...)
 	if err != nil {
 		return nil, err
 	}
 
-	for _, envVar := range envVars {
-		parts := strings.SplitN(envVar, "=", 2)
-		if len(parts) != 2 {
-			return nil, fmt.Errorf("cannot split env var: %v", parts)
-		}
-
-		key := parts[0]
-		val := parts[1]
-
+	for key, val := range envVars {
 		for _, suffix := range suffixes {
 			if !strings.HasSuffix(key, suffix) {
 				continue

@@ -35,35 +35,28 @@ func GetEnv(key string) (string, error) {
 	return val, nil
 }
 
-// Environment variable MODE must be set in .env to call the func.
-// Can be used for dev, prod and staging environments.
-func GetMode() (string, error) {
-	mode, err := GetEnv("MODE")
+// A wrapper func around godotenv read func, handling errors more precisely.
+func ReadAllEnvs(filenames ...string) (map[string]string, error) {
+	if len(filenames) == 0 {
+		filenames = []string{".env"}
+	}
+
+	kvps, err := godotenv.Read(filenames...)
 	if err != nil {
-		return mode, err
+		return nil, err
 	}
 
-	switch strings.ToLower(mode) {
-	case Dev, Prod, Staging:
-		return mode, nil
-	default:
-		return mode, fmt.Errorf("invalid environment mode: %s", mode)
-	}
-}
-
-// A wrapper func around os.Environ, handling errors more precisely.
-func GetAllEnv() ([]string, error) {
-	kvps := os.Environ()
 	if len(kvps) == 0 {
 		return nil, fmt.Errorf("no environment variables found")
 	}
+
 	return kvps, nil
 }
 
 // Same as GetEnv, but with default value.
 func GetEnvOrDefault(key, defaultVal string) string {
-	val := os.Getenv(key)
-	if val == "" {
+	val, err := GetEnv(key)
+	if err != nil {
 		return defaultVal
 	}
 	return val
