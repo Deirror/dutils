@@ -12,6 +12,5 @@ require (
 
 require (
 	cloud.google.com/go/compute/metadata v0.3.0 // indirect
-	github.com/a-h/templ v0.3.924 // indirect
 	github.com/lib/pq v1.10.9
 )
