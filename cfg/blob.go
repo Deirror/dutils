@@ -2,6 +2,8 @@ package cfg
 
 import "github.com/Deirror/dutils/env"
 
+var blobSuffixes = []string{"BLOB_PROJECT_URL", "BLOB_API_KEY", "BLOB_BUCKET"}
+
 // BlobConfig holds the configuration required to connect to a blob storage provider.
 type BlobConfig struct {
 	ProjectURL string // Base project URL of the blob storage service
@@ -17,20 +19,21 @@ func NewBlobConfig(url, apiKey, bucket string) *BlobConfig {
 	}
 }
 
-// LoadEnvBlobConfig reads the BlobConfig values from environment variables:
-// BLOB_PROJECT_URL, BLOB_API_KEY, and BLOB_BUCKET.
-func LoadEnvBlobConfig() (*BlobConfig, error) {
-	url, err := env.GetEnv("BLOB_PROJECT_URL")
+// LoadEnvBlobConfig loads BlobConfig from env vars with optional prefix.
+func LoadEnvBlobConfig(prefix ...string) (*BlobConfig, error) {
+	pfx := modPrefix(prefix...)
+
+	url, err := env.GetEnv(pfx + blobSuffixes[0])
 	if err != nil {
 		return nil, err
 	}
 
-	apiKey, err := env.GetEnv("BLOB_API_KEY")
+	apiKey, err := env.GetEnv(pfx + blobSuffixes[1])
 	if err != nil {
 		return nil, err
 	}
 
-	bucket, err := env.GetEnv("BLOB_BUCKET")
+	bucket, err := env.GetEnv(pfx + blobSuffixes[2])
 	if err != nil {
 		return nil, err
 	}
@@ -38,10 +41,9 @@ func LoadEnvBlobConfig() (*BlobConfig, error) {
 	return NewBlobConfig(url, apiKey, bucket), nil
 }
 
-// WithProjectURL sets the ProjectURL and returns the updated BlobConfig.
-func (cfg *BlobConfig) WithProjectURL(url string) *BlobConfig {
-	cfg.ProjectURL = url
-	return cfg
+// LoadEnvBlobConfigs loads multiple BlobConfigs by scanning env vars with blob suffixes.
+func LoadEnvBlobConfigs() (MultiEnvConfig[BlobConfig], error) {
+	return LoadMultiEnvConfigs(blobSuffixes, LoadEnvBlobConfig)
 }
 
 // WithAPIKey sets the APIKey and returns the updated BlobConfig.

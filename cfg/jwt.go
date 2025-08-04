@@ -6,6 +6,8 @@ import (
 	"github.com/Deirror/dutils/env"
 )
 
+var jwtSuffixes = []string{"JWT_SECRET", "JWT_COOKIE_NAME", "JWT_TOKEN_TTL"}
+
 // JWTConfig holds the configuration related to JWT-based authentication.
 type JWTConfig struct {
 	CookieName string        // Name of the cookie that stores the JWT
@@ -21,25 +23,32 @@ func NewJWTConfig(name, secret string, ttl time.Duration) *JWTConfig {
 	}
 }
 
-// LoadEnvJWTConfig loads the JWT configuration from environment variables:
+// LoadEnvJWTConfig loads the JWT configuration from environment variables with optional prefix:
 // JWT_COOKIE_NAME, JWT_SECRET, and JWT_TOKEN_TTL.
-func LoadEnvJWTConfig() (*JWTConfig, error) {
-	secret, err := env.GetEnv("JWT_SECRET")
+func LoadEnvJWTConfig(prefix ...string) (*JWTConfig, error) {
+	pfx := modPrefix(prefix...)
+
+	secret, err := env.GetEnv(pfx + jwtSuffixes[0])
 	if err != nil {
 		return nil, err
 	}
 
-	name, err := env.GetEnv("JWT_COOKIE_NAME")
+	name, err := env.GetEnv(pfx + jwtSuffixes[1])
 	if err != nil {
 		return nil, err
 	}
 
-	ttl, err := env.ParseEnvTimeDuration("JWT_TOKEN_TTL")
+	ttl, err := env.ParseEnvTimeDuration(pfx + jwtSuffixes[2])
 	if err != nil {
 		return nil, err
 	}
 
 	return NewJWTConfig(name, secret, ttl), nil
+}
+
+// LoadEnvJWTConfigs scans env vars and builds JWT configs based on their prefix.
+func LoadEnvJWTConfigs() (MultiEnvConfig[JWTConfig], error) {
+	return LoadMultiEnvConfigs(jwtSuffixes, LoadEnvJWTConfig)
 }
 
 // WithCookieName sets the cookie name for the JWTConfig.

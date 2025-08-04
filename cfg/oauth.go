@@ -2,6 +2,12 @@ package cfg
 
 import "github.com/Deirror/dutils/env"
 
+var oauthSuffixes = []string{
+	"OAUTH_CLIENT_ID",
+	"OAUTH_CLIENT_SECRET",
+	"OAUTH_REDIRECT_URL",
+}
+
 // OAuthConfig holds OAuth 2.0 client credentials and redirect URL.
 type OAuthConfig struct {
 	ClientID     string // OAuth client ID
@@ -17,25 +23,32 @@ func NewOAuthConfig(clientID, clientSecret, redirectURL string) *OAuthConfig {
 	}
 }
 
-// LoadEnvOAuthConfig loads OAuthConfig from environment variables:
-// OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, and OAUTH_REDIRECT_URL.
-func LoadEnvOAuthConfig() (*OAuthConfig, error) {
-	clientID, err := env.GetEnv("OAUTH_CLIENT_ID")
+// LoadEnvOAuthConfig loads OAuthConfig from environment variables,
+// with an optional prefix.
+func LoadEnvOAuthConfig(prefix ...string) (*OAuthConfig, error) {
+	pfx := modPrefix(prefix...)
+
+	clientID, err := env.GetEnv(pfx + oauthSuffixes[0])
 	if err != nil {
 		return nil, err
 	}
 
-	clientSecret, err := env.GetEnv("OAUTH_CLIENT_SECRET")
+	clientSecret, err := env.GetEnv(pfx + oauthSuffixes[1])
 	if err != nil {
 		return nil, err
 	}
 
-	redirectURL, err := env.GetEnv("OAUTH_REDIRECT_URL")
+	redirectURL, err := env.GetEnv(pfx + oauthSuffixes[2])
 	if err != nil {
 		return nil, err
 	}
 
 	return NewOAuthConfig(clientID, clientSecret, redirectURL), nil
+}
+
+// LoadEnvOAuthConfigs loads multiple OAuthConfigs by scanning env vars with oauth suffixes.
+func LoadEnvOAuthConfigs() (MultiEnvConfig[OAuthConfig], error) {
+	return LoadMultiEnvConfigs(oauthSuffixes, LoadEnvOAuthConfig)
 }
 
 // WithClientID sets the OAuth client ID and returns the updated config.

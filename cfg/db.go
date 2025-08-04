@@ -6,6 +6,14 @@ import (
 	"github.com/Deirror/dutils/env"
 )
 
+var dbSuffixes = []string{
+	"DB_DRIVER",
+	"DB_DSN",
+	"DB_POOL_SIZE",
+	"DB_MAX_IDLE",
+	"DB_MAX_LIFETIME",
+}
+
 // DBConfig holds the configuration parameters for a database connection.
 type DBConfig struct {
 	Driver      string        // Driver is used to set db engine (postgres, mysql and so on)
@@ -27,33 +35,41 @@ func NewDBConfig(driver, dsn string, size, maxIdle uint8, maxLT time.Duration) *
 
 // LoadEnvDBConfig loads the database configuration from environment variables.
 // Required variables: DB_DSN, DB_POOL_SIZE, DB_MAX_IDLE, DB_MAX_LIFETIME.
-func LoadEnvDBConfig() (*DBConfig, error) {
-	driver, err := env.GetEnv("DB_DRIVER")
+func LoadEnvDBConfig(prefix ...string) (*DBConfig, error) {
+	pfx := modPrefix(prefix...)
+
+	driver, err := env.GetEnv(pfx + dbSuffixes[0])
 	if err != nil {
 		return nil, err
 	}
 
-	dsn, err := env.GetEnv("DB_DSN")
+	dsn, err := env.GetEnv(pfx + dbSuffixes[1])
 	if err != nil {
 		return nil, err
 	}
 
-	size, err := env.ParseEnvInt("DB_POOL_SIZE")
+	size, err := env.ParseEnvInt(pfx + dbSuffixes[2])
 	if err != nil {
 		return nil, err
 	}
 
-	maxIdle, err := env.ParseEnvInt("DB_MAX_IDLE")
+	maxIdle, err := env.ParseEnvInt(pfx + dbSuffixes[3])
 	if err != nil {
 		return nil, err
 	}
 
-	maxLT, err := env.ParseEnvTimeDuration("DB_MAX_LIFETIME")
+	maxLT, err := env.ParseEnvTimeDuration(pfx + dbSuffixes[4])
 	if err != nil {
 		return nil, err
 	}
 
 	return NewDBConfig(driver, dsn, uint8(size), uint8(maxIdle), maxLT*time.Second), nil
+}
+
+// LoadEnvDBConfigs loads multiple DBConfig instances by scanning environment variables
+// with the dbSuffixes keys and optional prefixes.
+func LoadEnvDBConfigs() (MultiEnvConfig[DBConfig], error) {
+	return LoadMultiEnvConfigs(dbSuffixes, LoadEnvDBConfig)
 }
 
 // WithPoolSize sets the PoolSize and returns the updated DBConfig.

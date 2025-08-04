@@ -2,6 +2,14 @@ package cfg
 
 import "github.com/Deirror/dutils/env"
 
+var mailerSuffixes = []string{
+	"MAILER_HOST",
+	"MAILER_PORT",
+	"MAILER_USERNAME",
+	"MAILER_PASSWORD",
+	"MAILER_FROM",
+}
+
 // MailerConfig holds SMTP configuration for sending emails.
 type MailerConfig struct {
 	Host     string // SMTP server host
@@ -21,35 +29,42 @@ func NewMailerConfig(host, port, username, password, from string) *MailerConfig 
 	}
 }
 
-// LoadEnvMailerConfig loads MailerConfig values from environment variables:
-// MAILER_HOST, MAILER_PORT, MAILER_USERNAME, MAILER_PASSWORD, MAILER_FROM.
-func LoadEnvMailerConfig() (*MailerConfig, error) {
-	host, err := env.GetEnv("MAILER_HOST")
+// LoadEnvMailerConfig loads MailerConfig values from environment variables,
+// supporting an optional prefix.
+func LoadEnvMailerConfig(prefix ...string) (*MailerConfig, error) {
+	pfx := modPrefix(prefix...)
+
+	host, err := env.GetEnv(pfx + mailerSuffixes[0])
 	if err != nil {
 		return nil, err
 	}
 
-	port, err := env.GetEnv("MAILER_PORT")
+	port, err := env.GetEnv(pfx + mailerSuffixes[1])
 	if err != nil {
 		return nil, err
 	}
 
-	username, err := env.GetEnv("MAILER_USERNAME")
+	username, err := env.GetEnv(pfx + mailerSuffixes[2])
 	if err != nil {
 		return nil, err
 	}
 
-	password, err := env.GetEnv("MAILER_PASSWORD")
+	password, err := env.GetEnv(pfx + mailerSuffixes[3])
 	if err != nil {
 		return nil, err
 	}
 
-	from, err := env.GetEnv("MAILER_FROM")
+	from, err := env.GetEnv(pfx + mailerSuffixes[4])
 	if err != nil {
 		return nil, err
 	}
 
 	return NewMailerConfig(host, port, username, password, from), nil
+}
+
+// LoadEnvMailerConfigs loads multiple MailerConfigs by scanning env vars with mailer suffixes.
+func LoadEnvMailerConfigs() (MultiEnvConfig[MailerConfig], error) {
+	return LoadMultiEnvConfigs(mailerSuffixes, LoadEnvMailerConfig)
 }
 
 // WithHost sets the SMTP host and returns the updated MailerConfig.
