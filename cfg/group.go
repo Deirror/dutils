@@ -16,7 +16,7 @@ type EnvGroupMap map[string]map[string]string
 func LoadEnvGroups(suffixes []string, filenames ...string) (EnvGroupMap, error) {
 	grouped := make(EnvGroupMap)
 
-	envVars, err := env.ReadAllEnvs(filenames...)
+	envVars, err := env.GetAllEnvs(filenames...)
 	if err != nil {
 		return nil, err
 	}

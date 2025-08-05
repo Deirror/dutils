@@ -1,6 +1,7 @@
 package env
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -36,21 +37,32 @@ func GetEnv(key string) (string, error) {
 }
 
 // A wrapper func around godotenv read func, handling errors more precisely.
-func ReadAllEnvs(filenames ...string) (map[string]string, error) {
+func GetAllEnvs(filenames ...string) (map[string]string, error) {
 	if len(filenames) == 0 {
 		filenames = []string{".env"}
 	}
 
-	kvps, err := godotenv.Read(filenames...)
-	if err != nil {
-		return nil, err
+	if fileExists(filenames[0]) {
+		kvps, err := godotenv.Read(filenames...)
+		if err != nil {
+			return nil, fmt.Errorf("failed to read .env: %w", err)
+		}
+		return kvps, nil
 	}
 
-	if len(kvps) == 0 {
-		return nil, fmt.Errorf("no environment variables found")
+	envVars := make(map[string]string)
+	for _, entry := range os.Environ() {
+		parts := strings.SplitN(entry, "=", 2)
+		if len(parts) == 2 {
+			envVars[parts[0]] = parts[1]
+		}
 	}
 
-	return kvps, nil
+	if len(envVars) == 0 {
+		return nil, errors.New("no environment variables found (neither .env nor OS)")
+	}
+
+	return envVars, nil
 }
 
 // Same as GetEnv, but with default value.
@@ -107,4 +119,10 @@ func ParseEnvTimeDuration(key string) (time.Duration, error) {
 	}
 
 	return dur, nil
+}
+
+// checks if file is valid and not dir.
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	return err == nil && !info.IsDir()
 }
