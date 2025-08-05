@@ -42,12 +42,14 @@ func GetAllEnvs(filenames ...string) (map[string]string, error) {
 		filenames = []string{".env"}
 	}
 
-	if fileExists(filenames[0]) {
-		kvps, err := godotenv.Read(filenames...)
-		if err != nil {
-			return nil, fmt.Errorf("failed to read .env: %w", err)
+	for _, filename := range filenames {
+		if fileExists(filename) {
+			kvps, err := godotenv.Read(filenames...)
+			if err != nil {
+				return nil, fmt.Errorf("failed to read .env: %w", err)
+			}
+			return kvps, nil
 		}
-		return kvps, nil
 	}
 
 	envVars := make(map[string]string)
