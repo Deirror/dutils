@@ -1,7 +1,6 @@
 package cfg
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 
@@ -23,20 +22,14 @@ func LoadEnvGroups(suffixes []string, filenames ...string) (EnvGroupMap, error) 
 
 	for key, val := range envVars {
 		for _, suffix := range suffixes {
-			if !strings.HasSuffix(key, suffix) {
+			if !strings.HasSuffix(key, "_"+suffix) {
 				continue
 			}
 
-			prefixWithUnderscore := strings.TrimSuffix(key, suffix)
-
-			if !strings.HasSuffix(prefixWithUnderscore, "_") {
-				return nil, fmt.Errorf("%s must end in _", prefixWithUnderscore)
-			}
-
-			prefix := strings.TrimSuffix(prefixWithUnderscore, "_")
+			prefix := strings.TrimSuffix(key, "_"+suffix)
 
 			if len(prefix) == 0 {
-				return nil, errors.New("prefix is empty: _")
+				return nil, fmt.Errorf("prefix is empty: _ for suffix: %s", suffix)
 			}
 
 			if _, ok := grouped[prefix]; !ok {
