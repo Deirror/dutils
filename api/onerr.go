@@ -37,7 +37,7 @@ func HTMLErrorHandler(ctx context.Context, w http.ResponseWriter, r *http.Reques
 		"<html><head><title>Error</title></head><body>" +
 			"<h1>Error</h1>" +
 			"<p>Status: " + http.StatusText(errResp.Status) + "</p>" +
-			"<p>Message: " + errResp.ClientMsg + "</p>" +
+			"<p>MessageKey: " + errResp.MsgKey + "</p>" +
 			"</body></html>",
 	))
 }

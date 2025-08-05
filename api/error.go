@@ -4,45 +4,48 @@ import (
 	"errors"
 )
 
-// Simple error response struct with json notation.
+// ErrorResp is a simple error response struct used for API responses.
+// `MsgKey` is a frontend-friendly message key for localization (i18n).
+// `InternalMsg` is not serialized in JSON and is only used for logging.
 type ErrorResp struct {
-	Status    int    `json:"status"`         // HTTP status code with a json tag
-	ClientMsg string `json:"client_message"` // Human-readable message with a json tag
-	ServerMsg string `json:"-"`              // Server side message, for logging purposes
+	Status      int    `json:"status"`      // HTTP status code
+	MsgKey      string `json:"message_key"` // i18n key
+	InternalMsg string `json:"-"`           // Server-side log message
 }
 
-func NewErrorResp(status int, clientMsg, serverMsg string) *ErrorResp {
+// NewErrorResp constructs a new ErrorResp with both client-facing key and internal message.
+func NewErrorResp(status int, msgKey, internalMsg string) *ErrorResp {
 	return &ErrorResp{
-		Status:    status,
-		ClientMsg: clientMsg,
-		ServerMsg: serverMsg,
+		Status:      status,
+		MsgKey:      msgKey,
+		InternalMsg: internalMsg,
 	}
 }
 
-func NewClientErrorResp(status int, clientMsg string) *ErrorResp {
-	return NewErrorResp(status, clientMsg, "")
+// NewClientErrorResp constructs an ErrorResp with only a client-facing key.
+func NewClientErrorResp(status int, msgKey string) *ErrorResp {
+	return NewErrorResp(status, msgKey, "")
 }
 
-// Implementation func of error interface.
+// Error implements the error interface and returns the MsgKey.
 func (e *ErrorResp) Error() string {
-	return e.ClientMsg
+	return e.MsgKey
 }
 
-// Convertion from error to ErrorResp if possbile.
+// FromError attempts to convert a generic error into an *ErrorResp.
+// Returns nil if the error is not of the correct type.
 func FromError(err error) *ErrorResp {
 	if err == nil {
 		return nil
 	}
-
 	var errResp *ErrorResp
-	if ok := AsErrorResp(err, &errResp); !ok {
-		return nil
+	if ok := AsErrorResp(err, &errResp); ok {
+		return errResp
 	}
-
-	return errResp
+	return nil
 }
 
-// Helper func for checking if error is of type *ErroResp.
+// AsErrorResp checks whether the error is of type *ErrorResp.
 func AsErrorResp(err error, target **ErrorResp) bool {
 	return errors.As(err, target)
 }
