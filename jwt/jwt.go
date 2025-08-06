@@ -37,15 +37,45 @@ func (j *JWT) GenerateToken(email string) (string, error) {
 
 // SetCookie sets an HTTP-only, secure cookie with the JWT token on the response writer.
 // If a domain is provided, the cookie will be accessible across subdomains.
-func (j *JWT) SetCookie(w http.ResponseWriter, token string, domain ...string) {
+func (j *JWT) SetCookie(w http.ResponseWriter, token string, secure bool, domain ...string) {
 	cookie := &http.Cookie{
 		Name:     j.CookieName,
 		Value:    token,
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   true,
-		SameSite: http.SameSiteNoneMode,
+		Secure:   secure,
 		Expires:  time.Now().Add(j.TokenTTL),
+	}
+
+	if secure {
+		cookie.SameSite = http.SameSiteNoneMode
+	} else {
+		cookie.SameSite = http.SameSiteLaxMode
+	}
+
+	if len(domain) > 0 && domain[0] != "" {
+		cookie.Domain = domain[0]
+	}
+
+	http.SetCookie(w, cookie)
+}
+
+// RemoveCookie removes the JWT cookie by setting an expired Set-Cookie header.
+func (j *JWT) RemoveCookie(w http.ResponseWriter, secure bool, domain ...string) {
+	cookie := &http.Cookie{
+		Name:     j.CookieName,
+		Value:    "",
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   secure,
+		Expires:  time.Unix(0, 0),
+		MaxAge:   -1,
+	}
+
+	if secure {
+		cookie.SameSite = http.SameSiteNoneMode
+	} else {
+		cookie.SameSite = http.SameSiteLaxMode
 	}
 
 	if len(domain) > 0 && domain[0] != "" {
