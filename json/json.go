@@ -19,6 +19,13 @@ func Write(w http.ResponseWriter, s int, v any) error {
 	return Encode(w, v)
 }
 
+// WriteWithFallback writes JSON, and if it fails, writes a simple HTTP error.
+func WriteWithFallback(w http.ResponseWriter, s int, v any) {
+	if err := Write(w, s, v); err != nil {
+		http.Error(w, http.StatusText(s), s)
+	}
+}
+
 // Can be called when already having a var of type T.
 // Unmarshals data into the target.
 func DecodeInto[T any](r io.Reader, target *T) error {
