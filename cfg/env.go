@@ -4,7 +4,7 @@ import "github.com/Deirror/dutils/env"
 
 type MultiEnvEnvConfig = MultiEnvConfig[EnvConfig]
 
-var envSuffixes = []string{"MODE", "DOMAIN"}
+var envSuffixes = []string{"ENV_MODE", "ENV_DOMAIN"}
 
 // EnvConfig holds basic environment configuration like mode and domain.
 type EnvConfig struct {
@@ -20,7 +20,7 @@ func NewEnvConfig(mode, domain string) *EnvConfig {
 }
 
 // LoadEnvConfig loads EnvConfig from environment variables.
-// Required vars: MODE, DOMAIN
+// Required vars: ENV_MODE, ENV_DOMAIN
 func LoadEnvConfig(prefix ...string) (*EnvConfig, error) {
 	pfx := modPrefix(prefix...)
 
