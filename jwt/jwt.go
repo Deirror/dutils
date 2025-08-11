@@ -27,8 +27,8 @@ func NewJWT(jwtCfg *cfg.JWTConfig) *JWT {
 // GenerateToken creates a signed JWT token containing the user's email and expiration.
 func (j *JWT) GenerateToken(email string) (string, error) {
 	claims := jwt.MapClaims{
-		"email": email,
-		"exp":   time.Now().Add(j.TokenTTL).Unix(),
+		Email: email,
+		Exp:   time.Now().Add(j.TokenTTL).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -95,7 +95,7 @@ func (j *JWT) GetCookie(r *http.Request) (*http.Cookie, error) {
 func (j *JWT) ValidateJWT(tokenString string) (string, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header[Alg])
 		}
 		return []byte(j.Secret), nil
 	})
@@ -105,7 +105,7 @@ func (j *JWT) ValidateJWT(tokenString string) (string, error) {
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		exp, ok := claims["exp"].(float64)
+		exp, ok := claims[Exp].(float64)
 		if !ok {
 			return "", fmt.Errorf("missing exp claim")
 		}
@@ -113,7 +113,7 @@ func (j *JWT) ValidateJWT(tokenString string) (string, error) {
 			return "", fmt.Errorf("token has expired")
 		}
 
-		email, ok := claims["email"].(string)
+		email, ok := claims[Email].(string)
 		if !ok || email == "" {
 			return "", fmt.Errorf("email claim missing or invalid")
 		}

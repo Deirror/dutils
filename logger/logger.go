@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/Deirror/dutils/api"
 	"github.com/Deirror/dutils/env"
+	"github.com/Deirror/dutils/http/api"
 )
 
 // Inits the go standart logger, based on env mode.
@@ -35,7 +35,7 @@ func LogFunc(
 ) {
 	attrs := []slog.Attr{
 		slog.Any(api.ReqIDKey, ctx.Value(api.ReqIDKey)),
-		slog.Any("error", err),
+		slog.Any(Error, err),
 	}
 	attrs = append(attrs, extraAttrs...)
 
@@ -60,8 +60,8 @@ func LogFuncWithTiming(
 ) {
 	attrs := []slog.Attr{
 		slog.Any(api.ReqIDKey, ctx.Value(api.ReqIDKey)),
-		slog.Duration("took", time.Since(begin)),
-		slog.Any("error", err),
+		slog.Duration(Took, time.Since(begin)),
+		slog.Any(Error, err),
 	}
 	attrs = append(attrs, extraAttrs...)
 

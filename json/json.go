@@ -14,7 +14,7 @@ func Encode(w io.Writer, v any) error {
 // A func that can be used in handlers to write JSON.
 // Includes status code and structured data to marshall.
 func Write(w http.ResponseWriter, s int, v any) error {
-	w.Header().Set("Content-type", "application/json")
+	w.Header().Set(ContentType, ApplicationJSON)
 	w.WriteHeader(s)
 	return Encode(w, v)
 }
