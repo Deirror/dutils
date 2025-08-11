@@ -7,15 +7,16 @@ Description
 
 ## Features
 
-- `cfg`: Strongly typed config structs with fluent .With... chaining
+- `cfg`: Strongly typed config structs with fluent .With... chaining + multi struct with dynamic prefixes and concrete suffixes
 - `crypto`: Secure password hashing and comparison with bcrypt
+- `db`: Wrapper for sql.DB with extended funcs
 - `env`: Load .env files and manage environment-specific behavior
-- `http`: Helpers for Go 1.22+ r.PathValue, query parsing, etc.
+- `http`: Helpers for Go 1.22+ r.PathValue, query parsing, setting up a std http server, handler wrapper with ctx and custom err type and many more
+- `json`: Standardized JSON response and error writers
 - `jwt`: Full JWT token generation, validation, and cookie integration
 - `logger`: Simple slog-based structured logging setup
-- `json`: Standardized JSON response and error writers
-- `db`: Wrapper for sql.DB with extended funcs
-- `templ`: Reusable templ components for html
+- `mail`: Ready to use html templates for sending emails for business purposes
+- `oauth`: Google, Facebook and Github OAuth 2.0 config wrappers and more
 
 ## Packages
 
@@ -31,6 +32,7 @@ Supported configs:
 - cfg.KVConfig
 - cfg.MailerConfig
 - cfg.OAuthConfig
+- and others
 
 ```go
 import "github.com/Deirror/dutils/cfg"
@@ -47,7 +49,7 @@ Helpers for loading environment variables safely.
 ```go
 import "github.com/Deirror/dutils/env"
 
-_ = env.InitEnv(".env") // Load only if not in production
+_ = env.LoadEnv(".env") // Load only if not in production
 mode, _ := env.GetMode() // "dev" or "prod"
 
 val, err := env.GetEnv("DATABASE_URL")
@@ -71,8 +73,7 @@ Simplified helpers for parsing Go 1.22+ path and query values.
 ```go
 import "github.com/Deirror/dutils/http"
 
-id, err := http.QueryInt(r, "id")         // ?id=10 → int
-slug := http.PathValue(r, "slug")         // /blog/{slug}
+s := http.NewStdServerFromConfig(cfg, h)      
 ```
 
 ### `jwt`
@@ -116,8 +117,7 @@ import "github.com/Deirror/dutils/json"
 - Response Writers
   
 ```go
-err := json.WriteJSON(w, http.StatusOK, myData) // Marshal and write JSON
-err := json.SendErrorJSON(w, http.StatusBadRequest, "invalid input") // {"error": "..."}
+err := json.Write(w, http.StatusOK, myData) // Marshal and write JSON
 ```
 
 - Request Parsers
@@ -126,13 +126,13 @@ err := json.SendErrorJSON(w, http.StatusBadRequest, "invalid input") // {"error"
 var data MyStruct
 err := json.ParseJSONInto(r.Body, &data)
 
-data, err := json.ParseJSON[MyStruct](r.Body) // Generics-based shortcut
+data, err := json.DecodeInto[MyStruct](r.Body) // Generics-based shortcut
 ```
 
 - Encoder (manual streams)
 
 ```go
-err := json.EncodeJSON(w, myStruct) // Stream JSON to any io.Writer
+err := json.Encode(w, myStruct) // Stream JSON to any io.Writer
 ```
 
 ### `db`
@@ -159,7 +159,7 @@ go get github.com/Deirror/dutils@latest
 Or use a specific version:
 
 ```bash
-go get github.com/Deirror/dutils@v0.1.0
+go get github.com/Deirror/dutils@latest
 ```
 
 ## Usage
