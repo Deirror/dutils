@@ -138,3 +138,27 @@ func (b *EmailBuild) VerificationDeleteAccount(sysName, support, callback, code 
 	</html>
 	`, sysName, verifyLink, verifyLink, verifyLink, support, support)
 }
+
+// NotifyAccountDeleted returns an HTML email body notifying the user that their account has been deleted.
+// 'sysName' is the system name, 'support' is the support email for reporting unauthorized deletion.
+func (b *EmailBuild) NotifyAccountDeleted(sysName, support string) string {
+	return fmt.Sprintf(`
+	<!DOCTYPE html>
+	<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Account Deleted</title>
+	</head>
+	<body style="font-family: sans-serif; background: #f4f4f4; padding: 20px;">
+		<div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px;">
+			<h2 style="color: #333;">Your Account Has Been Deleted</h2>
+			<p>This is a notification from <strong>%s</strong> to inform you that your account has been successfully deleted.</p>
+			<p>If you did not request this deletion or believe this action was performed without your consent, please contact our support team immediately at 
+			<a href="mailto:%s">%s</a>.</p>
+			<hr style="margin: 24px 0; border: none; border-top: 1px solid #ddd;">
+			<p style="font-size: 12px; color: #666;">This message was sent automatically. Please do not reply directly to this email.</p>
+		</div>
+	</body>
+	</html>
+	`, sysName, support, support)
+}
