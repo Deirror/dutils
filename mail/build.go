@@ -40,6 +40,7 @@ func (b *EmailBuild) VerificationEmail(callback, code string) string {
 				</p>
 				<p>If the button doesn't work, paste this link in your browser:</p>
 				<p><a href="%s">%s</a></p>
+				<p style="font-size: 12px; color: #666;">This message was sent automatically. Please do not reply directly to this email.</p>
 			</div>
 		</body>
 		</html>
@@ -70,6 +71,7 @@ func (b *EmailBuild) VerificationChangeEmail(callback, code string) string {
 				</p>
 				<p>If the button doesn't work, paste this link in your browser:</p>
 				<p><a href="%s">%s</a></p>
+				<p style="font-size: 12px; color: #666;">This message was sent automatically. Please do not reply directly to this email.</p>
 			</div>
 		</body>
 		</html>
@@ -101,4 +103,38 @@ func (b *EmailBuild) NotifyOldEmail(sysName, support string) string {
 	</body>
 	</html>
 `, sysName, support, support)
+}
+
+// VerificationDeleteAccount returns an HTML email body for verifying a user's account deletion request.
+// 'sysName' is the system name, 'support' is the support email, 'callback' is the endpoint path, and 'code' is the unique verification code.
+func (b *EmailBuild) VerificationDeleteAccount(sysName, support, callback, code string) string {
+	verifyLink := fmt.Sprintf("%s%s?code=%s", b.domain, callback, code)
+
+	return fmt.Sprintf(`
+	<!DOCTYPE html>
+	<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Confirm Account Deletion</title>
+	</head>
+	<body style="font-family: sans-serif; background: #f4f4f4; padding: 20px;">
+		<div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px;">
+			<h2 style="color: #333;">Confirm Account Deletion</h2>
+			<p>This is a request to delete your account on <strong>%s</strong>.</p>
+			<p>If you made this request, please confirm by clicking the button below:</p>
+			<p style="text-align: center; margin: 24px 0;">
+				<a href="%s" style="background: #e11d48; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px;">
+					Delete Account
+				</a>
+			</p>
+			<p>If the button doesn't work, paste this link in your browser:</p>
+			<p><a href="%s">%s</a></p>
+			<p>If you did not request account deletion, please contact our support team at 
+			<a href="mailto:%s">%s</a>.</p>
+			<hr style="margin: 24px 0; border: none; border-top: 1px solid #ddd;">
+			<p style="font-size: 12px; color: #666;">This message was sent automatically. Please do not reply directly to this email.</p>
+		</div>
+	</body>
+	</html>
+	`, sysName, verifyLink, verifyLink, verifyLink, support, support)
 }
