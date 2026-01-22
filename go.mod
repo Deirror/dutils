@@ -1,6 +1,6 @@
-module github.com/Deirror/dutils
+module github.com/Deirror/servette
 
-go 1.24.4
+go 1.25.4
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible

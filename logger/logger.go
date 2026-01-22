@@ -11,7 +11,7 @@ import (
 )
 
 // Inits the go standart logger, based on env mode.
-func InitLogger(mode string) *slog.Logger {
+func New(mode string) *slog.Logger {
 	var h slog.Handler
 	if mode == env.Dev {
 		h = slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug})
