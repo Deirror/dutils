@@ -20,7 +20,7 @@ const (
 // Loads environment variables from the given files.
 // It is intented to be used in development mode.
 // If in dev mode, make sure to load the env vars first, then call other funcs.
-func LoadEnv(filenames ...string) error {
+func Load(filenames ...string) error {
 	if err := godotenv.Load(filenames...); err != nil {
 		return fmt.Errorf("error loading .env file: %v", err)
 	}
@@ -28,7 +28,7 @@ func LoadEnv(filenames ...string) error {
 }
 
 // A wrapper func around os.Getenv, but handles error with more text.
-func GetEnv(key string) (string, error) {
+func Get(key string) (string, error) {
 	val, ok := os.LookupEnv(key)
 	if !ok {
 		return "", fmt.Errorf("environment variable %s not set", key)
@@ -37,7 +37,7 @@ func GetEnv(key string) (string, error) {
 }
 
 // A wrapper func around godotenv read func, handling errors more precisely.
-func GetAllEnvs(filenames ...string) (map[string]string, error) {
+func GetAll(filenames ...string) (map[string]string, error) {
 	if len(filenames) == 0 {
 		filenames = []string{".env"}
 	}
@@ -67,9 +67,9 @@ func GetAllEnvs(filenames ...string) (map[string]string, error) {
 	return envVars, nil
 }
 
-// Same as GetEnv, but with default value.
-func GetEnvOrDefault(key, defaultVal string) string {
-	val, err := GetEnv(key)
+// Same as Get, but with default value.
+func GetValOrDefault(key, defaultVal string) string {
+	val, err := Get(key)
 	if err != nil {
 		return defaultVal
 	}
@@ -78,8 +78,8 @@ func GetEnvOrDefault(key, defaultVal string) string {
 
 // Gets key's value, calling GetEnv and parses to bool.
 // Assumes it is in a specific format - text or a binary representation.
-func ParseEnvBool(key string) (bool, error) {
-	val, err := GetEnv(key)
+func ParseBool(key string) (bool, error) {
+	val, err := Get(key)
 	if err != nil {
 		return false, err
 	}
@@ -95,8 +95,8 @@ func ParseEnvBool(key string) (bool, error) {
 }
 
 // Gets and parses key's value to int.
-func ParseEnvInt(key string) (int, error) {
-	val, err := GetEnv(key)
+func ParseInt(key string) (int, error) {
+	val, err := Get(key)
 	if err != nil {
 		return 0, err
 	}
@@ -109,8 +109,8 @@ func ParseEnvInt(key string) (int, error) {
 }
 
 // Gets and parses key's value to duration.
-func ParseEnvTimeDuration(key string) (time.Duration, error) {
-	val, err := GetEnv(key)
+func ParseTimeDuration(key string) (time.Duration, error) {
+	val, err := Get(key)
 	if err != nil {
 		return 0, err
 	}
