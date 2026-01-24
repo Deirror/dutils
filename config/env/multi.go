@@ -1,14 +1,14 @@
 package envcfg
 
-// Represents maps of  prefixes (e.g. "NEON", "UPSTASH", "WEB") to a set of EnvConfigs.
-type MultiEnvConfig[T any] map[string]*T
+// Represents maps of  prefixes (e.g. "NEON", "UPSTASH", "WEB") to a set of Configs.
+type MultiConfig[T any] map[string]*T
 
 // Template func for loading envs with their prefixes.
-func LoadMultiEnvConfigs[T any](
+func LoadMultiConfig[T any](
 	suffixes []string,
 	loader func(prefix ...string) (*T, error),
-) (MultiEnvConfig[T], error) {
-	grouped, err := LoadEnvGroups(suffixes)
+) (MultiConfig[T], error) {
+	grouped, err := LoadGroups(suffixes)
 	if err != nil {
 		return nil, err
 	}

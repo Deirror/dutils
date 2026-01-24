@@ -1,57 +1,34 @@
 package appenv
 
 import (
+	"github.com/Deirror/servette/app"
+	"github.com/Deirror/servette/config/env"
 	"github.com/Deirror/servette/env"
 )
 
-type MultiEnvEnvConfig = MultiEnvConfig[EnvConfig]
+type MultiConfig = envcfg.MultiConfig[app.Config]
 
-var envSuffixes = []string{"ENV_MODE", "ENV_DOMAIN"}
+var suffixes = []string{"APP_MODE", "APP_DOMAIN"}
 
-// EnvConfig holds basic environment configuration like mode and domain.
-type EnvConfig struct {
-	Mode   string // Application mode: development, staging, production
-	Domain string // Public-facing domain, e.g., example.com
-}
+// LoadConfig loads Config from environment variables.
+// Required vars: APP_MODE, APP_DOMAIN
+func LoadConfig(prefix ...string) (*app.Config, error) {
+	pfx := envcfg.ModPrefix(prefix...)
 
-func NewEnvConfig(mode, domain string) *EnvConfig {
-	return &EnvConfig{
-		Mode:   mode,
-		Domain: domain,
-	}
-}
-
-// LoadEnvConfig loads EnvConfig from environment variables.
-// Required vars: ENV_MODE, ENV_DOMAIN
-func LoadEnvConfig(prefix ...string) (*EnvConfig, error) {
-	pfx := modPrefix(prefix...)
-
-	mode, err := env.GetEnv(pfx + envSuffixes[0])
+	mode, err := env.Get(pfx + suffixes[0])
 	if err != nil {
 		return nil, err
 	}
 
-	domain, err := env.GetEnv(pfx + envSuffixes[1])
+	domain, err := env.Get(pfx + suffixes[1])
 	if err != nil {
 		return nil, err
 	}
 
-	return NewEnvConfig(mode, domain), nil
+	return app.NewConfig(mode, domain), nil
 }
 
-// LoadEnvConfigs scans env vars and builds env configs based on their prefix.
-func LoadEnvConfigs() (MultiEnvConfig[EnvConfig], error) {
-	return LoadMultiEnvConfigs(envSuffixes, LoadEnvConfig)
-}
-
-// WithMode sets the mode and returns the updated EnvConfig.
-func (cfg *EnvConfig) WithMode(mode string) *EnvConfig {
-	cfg.Mode = mode
-	return cfg
-}
-
-// WithDomain sets the domain and returns the updated EnvConfig.
-func (cfg *EnvConfig) WithDomain(domain string) *EnvConfig {
-	cfg.Domain = domain
-	return cfg
+// LoadMultiConfig scans env vars and builds app configs based on their prefix.
+func LoadMultiConfig() (MultiConfig, error) {
+	return envcfg.LoadMultiConfig(suffixes, LoadConfig)
 }

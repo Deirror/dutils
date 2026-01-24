@@ -7,15 +7,15 @@ import (
 	"github.com/Deirror/servette/env"
 )
 
-// EnvGroupMap maps a prefix (e.g. "WEB", "EXE") to a set of environment variable suffixes and their values.
+// GroupMap maps a prefix (e.g. "WEB", "EXE") to a set of environment variable suffixes and their values.
 // For example, for "WEB_JWT_SECRET", the prefix is "WEB" and the suffix is "_JWT_SECRET".
-type EnvGroupMap map[string]map[string]string
+type GroupMap map[string]map[string]string
 
 // Extracts all env vars ending with the suffixes.
-func LoadEnvGroups(suffixes []string, filenames ...string) (EnvGroupMap, error) {
-	grouped := make(EnvGroupMap)
+func LoadGroups(suffixes []string, filenames ...string) (GroupMap, error) {
+	grouped := make(GroupMap)
 
-	envVars, err := env.GetAllEnvs(filenames...)
+	envVars, err := env.GetAll(filenames...)
 	if err != nil {
 		return nil, err
 	}
@@ -43,6 +43,6 @@ func LoadEnvGroups(suffixes []string, filenames ...string) (EnvGroupMap, error) 
 }
 
 // Retrieves env vars based on prefix.
-func (e EnvGroupMap) GetGroup(prefix string) map[string]string {
-	return e[prefix]
+func (m GroupMap) GetGroup(prefix string) map[string]string {
+	return m[prefix]
 }
