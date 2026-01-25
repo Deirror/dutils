@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Deirror/servette/json"
-	"github.com/Deirror/servette/trans/err"
+	"github.com/Deirror/servette/encoding/json"
+	"github.com/Deirror/servette/transport/error"
 )
 
 // Can be used in Wrap func as default one

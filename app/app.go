@@ -6,6 +6,11 @@ import (
 	"sync"
 )
 
+type Runner interface {
+	Start(ctx context.Context) error
+	Shutdown(ctx context.Context) error
+}
+
 type App struct {
 	log *slog.Logger
 

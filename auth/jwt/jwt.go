@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Deirror/dutils/cfg"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -16,7 +15,7 @@ type JWT struct {
 	TokenTTL   time.Duration // Token time-to-live duration
 }
 
-func NewJWT(jwtCfg *cfg.JWTConfig) *JWT {
+func NewJWT(jwtCfg *Config) *JWT {
 	return &JWT{
 		CookieName: jwtCfg.CookieName,
 		Secret:     jwtCfg.Secret,

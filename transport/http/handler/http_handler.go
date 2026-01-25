@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/Deirror/servette/trans/err"
+	"github.com/Deirror/servette/transport/error"
 )
 
 // A handler func which accepts context field and returns an error.

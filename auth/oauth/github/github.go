@@ -2,7 +2,6 @@ package github
 
 import (
 	"github.com/Deirror/servette/auth/oauth"
-	"github.com/Deirror/servette/config"
 	"golang.org/x/oauth2"
 )
 
@@ -13,7 +12,7 @@ var Endpoint = oauth2.Endpoint{
 	TokenURL: "https://github.com/login/oauth/access_token",
 }
 
-func NewOAuth2Config(cfg *cfg.OAuthConfig) *oauth2.Config {
+func NewOAuth2Config(cfg *oauth.Config) *oauth2.Config {
 	return oauth.NewOAuth2Config(
 		cfg,
 		Scopes,

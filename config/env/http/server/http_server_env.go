@@ -9,10 +9,10 @@ import (
 type MultiConfig = envcfg.MultiConfig[httpsrv.Config]
 
 var suffixes = []string{
-	"SERVER_PORT",
-	"SERVER_READ_TIMEOUT",
-	"SERVER_WRITE_TIMEOUT",
-	"SERVER_IDLE_TIMEOUT",
+	"HTTP_SERVER_PORT",
+	"HTTP_SERVER_READ_TIMEOUT",
+	"HTTP_SERVER_WRITE_TIMEOUT",
+	"HTTP_SERVER_IDLE_TIMEOUT",
 }
 
 // LoadConfig loads server config values from environment variables.

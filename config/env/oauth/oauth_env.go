@@ -1,72 +1,43 @@
-package cfg
+package oauthenv
 
-import "github.com/Deirror/dutils/env"
+import (
+	"github.com/Deirror/servette/auth/oauth"
+	"github.com/Deirror/servette/config/env"
+	"github.com/Deirror/servette/env"
+)
 
-type MultiEnvOAuthConfig = MultiEnvConfig[OAuthConfig]
+type MultiConfig = envcfg.MultiConfig[oauth.Config]
 
-var oauthSuffixes = []string{
+var suffixes = []string{
 	"OAUTH_CLIENT_ID",
 	"OAUTH_CLIENT_SECRET",
 	"OAUTH_REDIRECT_URL",
 }
 
-// OAuthConfig holds OAuth 2.0 client credentials and redirect URL.
-type OAuthConfig struct {
-	ClientID     string // OAuth client ID
-	ClientSecret string // OAuth client secret
-	RedirectURL  string // OAuth redirect URL after authentication
-}
-
-func NewOAuthConfig(clientID, clientSecret, redirectURL string) *OAuthConfig {
-	return &OAuthConfig{
-		ClientID:     clientID,
-		ClientSecret: clientSecret,
-		RedirectURL:  redirectURL,
-	}
-}
-
-// LoadEnvOAuthConfig loads OAuthConfig from environment variables,
+// LoadConfig loads OAuth Config from environment variables,
 // with an optional prefix.
-func LoadEnvOAuthConfig(prefix ...string) (*OAuthConfig, error) {
-	pfx := modPrefix(prefix...)
+func LoadConfig(prefix ...string) (*oauth.Config, error) {
+	pfx := envcfg.ModPrefix(prefix...)
 
-	clientID, err := env.GetEnv(pfx + oauthSuffixes[0])
+	clientID, err := env.Get(pfx + suffixes[0])
 	if err != nil {
 		return nil, err
 	}
 
-	clientSecret, err := env.GetEnv(pfx + oauthSuffixes[1])
+	clientSecret, err := env.Get(pfx + suffixes[1])
 	if err != nil {
 		return nil, err
 	}
 
-	redirectURL, err := env.GetEnv(pfx + oauthSuffixes[2])
+	redirectURL, err := env.Get(pfx + suffixes[2])
 	if err != nil {
 		return nil, err
 	}
 
-	return NewOAuthConfig(clientID, clientSecret, redirectURL), nil
+	return oauth.NewConfig(clientID, clientSecret, redirectURL), nil
 }
 
-// LoadEnvOAuthConfigs loads multiple OAuthConfigs by scanning env vars with oauth suffixes.
-func LoadEnvOAuthConfigs() (MultiEnvConfig[OAuthConfig], error) {
-	return LoadMultiEnvConfigs(oauthSuffixes, LoadEnvOAuthConfig)
-}
-
-// WithClientID sets the OAuth client ID and returns the updated config.
-func (cfg *OAuthConfig) WithClientID(clientID string) *OAuthConfig {
-	cfg.ClientID = clientID
-	return cfg
-}
-
-// WithClientSecret sets the OAuth client secret and returns the updated config.
-func (cfg *OAuthConfig) WithClientSecret(clientSecret string) *OAuthConfig {
-	cfg.ClientSecret = clientSecret
-	return cfg
-}
-
-// WithRedirectURL sets the OAuth redirect URL and returns the updated config.
-func (cfg *OAuthConfig) WithRedirectURL(redirectURL string) *OAuthConfig {
-	cfg.RedirectURL = redirectURL
-	return cfg
+// LoadMultiConfig loads multiple OAuth Configs by scanning env vars with oauth suffixes.
+func LoadMultiConfig() (MultiConfig, error) {
+	return envcfg.LoadMultiConfig(suffixes, LoadConfig)
 }

@@ -25,7 +25,7 @@ func LoadConfig(prefix ...string) (*doc.Config, error) {
 	return doc.NewConfig(url), nil
 }
 
-// LoadMultiConfigs loads multiple Config instances by scanning env vars with suffixes.
-func LoadMultiConfigs() (MultiConfig, error) {
+// LoadMultiConfig loads multiple Config instances by scanning env vars with suffixes.
+func LoadMultiConfig() (MultiConfig, error) {
 	return envcfg.LoadMultiConfig(suffixes, LoadConfig)
 }

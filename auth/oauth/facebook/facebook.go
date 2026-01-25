@@ -1,7 +1,6 @@
 package facebook
 
 import (
-	"github.com/Deirror/servette/config"
 	"github.com/Deirror/servette/auth/oauth"
 	"golang.org/x/oauth2"
 )
@@ -16,7 +15,7 @@ var Endpoint = oauth2.Endpoint{
 	TokenURL: "https://graph.facebook.com/v17.0/oauth/access_token",
 }
 
-func NewOAuth2Config(cfg *cfg.OAuthConfig) *oauth2.Config {
+func NewOAuth2Config(cfg *oauth.Config) *oauth2.Config {
 	return oauth.NewOAuth2Config(
 		cfg,
 		Scopes,

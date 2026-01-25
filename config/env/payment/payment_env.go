@@ -1,86 +1,49 @@
-package cfg
+package paymentenv
 
-import "github.com/Deirror/dutils/env"
+import (
+	"github.com/Deirror/servette/config/env"
+	"github.com/Deirror/servette/domain/payment"
+	"github.com/Deirror/servette/env"
+)
 
-type MultiEnvPaymentConfig = MultiEnvConfig[PaymentConfig]
+type MultiConfig = envcfg.MultiConfig[payment.Config]
 
-var paymentSuffixes = []string{
+var suffixes = []string{
 	"PAYMENT_API_KEY",
 	"PAYMENT_SECRET_KEY",
 	"PAYMENT_WEBHOOK_URL",
 	"PAYMENT_WEBHOOK_SECRET",
 }
 
-// PaymentConfig holds configuration details for payment processing.
-type PaymentConfig struct {
-	APIKey        string // Public API key for the payment provider
-	SecretKey     string // Secret key for authenticating requests
-	WebhookURL    string // URL to receive payment provider webhook callbacks
-	WebhookSecret string // Secret used to verify webhook authenticity
-}
-
-func NewPaymentConfig(apiKey, secretKey, url, webhookSecret string) *PaymentConfig {
-	return &PaymentConfig{
-		APIKey:        apiKey,
-		SecretKey:     secretKey,
-		WebhookURL:    url,
-		WebhookSecret: webhookSecret,
-	}
-}
-
-// LoadEnvPaymentConfig loads PaymentConfig from environment variables,
+// LoadConfig loads Payment Config from environment variables,
 // optionally with a prefix.
-func LoadEnvPaymentConfig(prefix ...string) (*PaymentConfig, error) {
-	pfx := modPrefix(prefix...)
+func LoadConfig(prefix ...string) (*payment.Config, error) {
+	pfx := envcfg.ModPrefix(prefix...)
 
-	apiKey, err := env.GetEnv(pfx + paymentSuffixes[0])
+	apiKey, err := env.Get(pfx + suffixes[0])
 	if err != nil {
 		return nil, err
 	}
 
-	secretKey, err := env.GetEnv(pfx + paymentSuffixes[1])
+	secretKey, err := env.Get(pfx + suffixes[1])
 	if err != nil {
 		return nil, err
 	}
 
-	webhookURL, err := env.GetEnv(pfx + paymentSuffixes[2])
+	webhookURL, err := env.Get(pfx + suffixes[2])
 	if err != nil {
 		return nil, err
 	}
 
-	webhookSecret, err := env.GetEnv(pfx + paymentSuffixes[3])
+	webhookSecret, err := env.Get(pfx + suffixes[3])
 	if err != nil {
 		return nil, err
 	}
 
-	return NewPaymentConfig(apiKey, secretKey, webhookURL, webhookSecret), nil
+	return payment.NewConfig(apiKey, secretKey, webhookURL, webhookSecret), nil
 }
 
-// LoadEnvPaymentConfigs loads multiple PaymentConfigs by scanning env vars with payment suffixes.
-func LoadEnvPaymentConfigs() (MultiEnvConfig[PaymentConfig], error) {
-	return LoadMultiEnvConfigs(paymentSuffixes, LoadEnvPaymentConfig)
-}
-
-// WithAPIKey sets the API key and returns the updated config.
-func (cfg *PaymentConfig) WithAPIKey(key string) *PaymentConfig {
-	cfg.APIKey = key
-	return cfg
-}
-
-// WithSecretKey sets the secret key and returns the updated config.
-func (cfg *PaymentConfig) WithSecretKey(secret string) *PaymentConfig {
-	cfg.SecretKey = secret
-	return cfg
-}
-
-// WithWebhookURL sets the webhook URL and returns the updated config.
-func (cfg *PaymentConfig) WithWebhookURL(url string) *PaymentConfig {
-	cfg.WebhookURL = url
-	return cfg
-}
-
-// WithWebhookSecret sets the webhook secret and returns the updated config.
-func (cfg *PaymentConfig) WithWebhookSecret(secret string) *PaymentConfig {
-	cfg.WebhookSecret = secret
-	return cfg
+// LoadMultiConfig loads multiple Payment Configs by scanning env vars with payment suffixes.
+func LoadMultiConfig() (MultiConfig, error) {
+	return envcfg.LoadMultiConfig(suffixes, LoadConfig)
 }

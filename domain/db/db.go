@@ -3,22 +3,21 @@ package db
 import (
 	"database/sql"
 
-	"github.com/Deirror/servette/config"
 	_ "github.com/lib/pq"
 )
 
-// SQLDatabase wraps a standard sql.DB instance and provides
+// SQLDB wraps a standard sql.DB instance and provides
 // lifecycle management for SQL database connections.
-type SQLDatabase struct {
+type SQLDB struct {
 	db *sql.DB
 }
 
-// NewSQLDatabase initializes and returns a new SQLDatabase instance
+// NewSQLDB initializes and returns a new SQLDB instance
 // using the provided configuration. It sets connection pool parameters
 // such as maximum open/idle connections and connection lifetime.
 //
 // Returns an error if the connection could not be established.
-func NewSQLDatabase(cfg *cfg.DBConfig) (*SQLDatabase, error) {
+func NewSQLDB(cfg *Config) (*SQLDB, error) {
 	db, err := Connect(cfg.Driver, cfg.DSN)
 	if err != nil {
 		return nil, err
@@ -28,19 +27,19 @@ func NewSQLDatabase(cfg *cfg.DBConfig) (*SQLDatabase, error) {
 	db.SetMaxIdleConns(int(cfg.MaxIdle))
 	db.SetConnMaxLifetime(cfg.MaxLifetime)
 
-	return &SQLDatabase{
+	return &SQLDB{
 		db: db,
 	}, nil
 }
 
 // DB returns a copy of the raw db
-func (db *SQLDatabase) DB() *sql.DB {
+func (db *SQLDB) DB() *sql.DB {
 	return db.db
 }
 
 // Close closes the underlying database connection.
 // It is safe to call Close multiple times; if the DB is already nil, it does nothing.
-func (db *SQLDatabase) Close() error {
+func (db *SQLDB) Close() error {
 	if db.db != nil {
 		return db.db.Close()
 	}
@@ -66,6 +65,6 @@ func Connect(driver, dsn string) (*sql.DB, error) {
 
 // Ping verifies that the database connection is still alive.
 // It is useful for health checks or readiness probes.
-func (db *SQLDatabase) Ping() error {
+func (db *SQLDB) Ping() error {
 	return db.db.Ping()
 }
