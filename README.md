@@ -1,7 +1,8 @@
-# dutils
+# servette
 
 >[!WARNING]
 > The whole package is in major refactor!
+> The documention is out-of-dated
 
 Description
 -
