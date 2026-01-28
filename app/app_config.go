@@ -1,4 +1,4 @@
-package app
+package appx
 
 // Config holds basic environment configuration like mode and domain.
 type Config struct {
