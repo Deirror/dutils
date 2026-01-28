@@ -1,4 +1,4 @@
-module github.com/Deirror/servette/v2
+module github.com/Deirror/servette
 
 go 1.25.4
 
