@@ -1,4 +1,4 @@
-package envcfg
+package env
 
 // Represents maps of  prefixes (e.g. "NEON", "UPSTASH", "WEB") to a set of Configs.
 type MultiConfig[T any] map[string]*T

@@ -1,4 +1,4 @@
-package urlenv
+package url
 
 import (
 	"github.com/Deirror/servette/config/env"

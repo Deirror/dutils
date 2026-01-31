@@ -1,4 +1,4 @@
-package hdr
+package header
 
 const (
 	Accept         = "Accept"

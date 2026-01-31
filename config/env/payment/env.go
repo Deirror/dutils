@@ -1,4 +1,4 @@
-package paymentenv
+package payment
 
 import (
 	"github.com/Deirror/servette/config/env"

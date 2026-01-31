@@ -1,4 +1,4 @@
-package kvenv
+package kv
 
 import (
 	"github.com/Deirror/servette/config/env"

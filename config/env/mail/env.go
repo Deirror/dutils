@@ -1,4 +1,4 @@
-package mailcfg
+package mail
 
 import (
 	"github.com/Deirror/servette/config/env"

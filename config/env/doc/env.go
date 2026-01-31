@@ -1,4 +1,4 @@
-package docenv
+package doc
 
 import (
 	"github.com/Deirror/servette/env"

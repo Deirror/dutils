@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/Deirror/servette/env"
-	"github.com/Deirror/servette/transport/http/handler"
+	"github.com/Deirror/servette/transport"
 )
 
 // Inits the go standart logger, based on env mode.
@@ -34,7 +34,7 @@ func LogFunc(
 	extraAttrs ...slog.Attr,
 ) {
 	attrs := []slog.Attr{
-		slog.Any(httphdl.ReqIDKey, ctx.Value(httphdl.ReqIDKey)),
+		slog.Any(transport.ReqIDKey, ctx.Value(transport.ReqIDKey)),
 		slog.Any(Error, err),
 	}
 	attrs = append(attrs, extraAttrs...)
@@ -59,7 +59,7 @@ func LogFuncWithTiming(
 	extraAttrs ...slog.Attr,
 ) {
 	attrs := []slog.Attr{
-		slog.Any(httphdl.ReqIDKey, ctx.Value(httphdl.ReqIDKey)),
+		slog.Any(transport.ReqIDKey, ctx.Value(transport.ReqIDKey)),
 		slog.Duration(Took, time.Since(begin)),
 		slog.Any(Error, err),
 	}

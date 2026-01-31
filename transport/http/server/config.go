@@ -1,4 +1,4 @@
-package httpsrv
+package server
 
 import "time"
 

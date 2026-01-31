@@ -1,4 +1,4 @@
-package envcfg
+package env
 
 import "strings"
 

@@ -1,4 +1,4 @@
-package blobenv
+package blob
 
 import (
 	"github.com/Deirror/servette/config/env"

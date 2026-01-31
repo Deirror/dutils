@@ -1,4 +1,4 @@
-package jwtenv
+package jwt
 
 import (
 	"github.com/Deirror/servette/config/env"

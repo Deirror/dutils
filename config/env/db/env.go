@@ -1,4 +1,4 @@
-package dbenv
+package db
 
 import (
 	"time"

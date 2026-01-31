@@ -1,4 +1,4 @@
-package appenv
+package app
 
 import (
 	"github.com/Deirror/servette/app"
@@ -6,13 +6,13 @@ import (
 	"github.com/Deirror/servette/env"
 )
 
-type MultiConfig = envcfg.MultiConfig[app.Config]
+type MultiConfig = envcfg.MultiConfig[appx.Config]
 
 var suffixes = []string{"APP_MODE", "APP_DOMAIN"}
 
 // LoadConfig loads Config from environment variables.
 // Required vars: APP_MODE, APP_DOMAIN
-func LoadConfig(prefix ...string) (*app.Config, error) {
+func LoadConfig(prefix ...string) (*appx.Config, error) {
 	pfx := envcfg.ModPrefix(prefix...)
 
 	mode, err := env.Get(pfx + suffixes[0])
@@ -25,7 +25,7 @@ func LoadConfig(prefix ...string) (*app.Config, error) {
 		return nil, err
 	}
 
-	return app.NewConfig(mode, domain), nil
+	return appx.NewConfig(mode, domain), nil
 }
 
 // LoadMultiConfig scans env vars and builds app configs based on their prefix.

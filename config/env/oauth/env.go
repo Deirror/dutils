@@ -1,4 +1,4 @@
-package oauthenv
+package oauth
 
 import (
 	"github.com/Deirror/servette/auth/oauth"
