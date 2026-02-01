@@ -1,7 +1,7 @@
 package mail
 
 import (
-	"github.com/Deirror/servette/config/env"
+	envcfg "github.com/Deirror/servette/config/env"
 	"github.com/Deirror/servette/domain/mail"
 	"github.com/Deirror/servette/env"
 )

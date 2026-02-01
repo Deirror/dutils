@@ -1,7 +1,7 @@
-package server 
+package server
 
 import (
-	"github.com/Deirror/servette/config/env"
+	envcfg "github.com/Deirror/servette/config/env"
 	"github.com/Deirror/servette/env"
 	"github.com/Deirror/servette/transport/http/server"
 )

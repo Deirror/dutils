@@ -1,9 +1,9 @@
 package jwt
 
 import (
-	"github.com/Deirror/servette/config/env"
-	"github.com/Deirror/servette/env"
 	"github.com/Deirror/servette/auth/jwt"
+	envcfg "github.com/Deirror/servette/config/env"
+	"github.com/Deirror/servette/env"
 )
 
 type MultiConfig = envcfg.MultiConfig[jwt.Config]

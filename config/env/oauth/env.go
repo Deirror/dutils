@@ -2,7 +2,7 @@ package oauth
 
 import (
 	"github.com/Deirror/servette/auth/oauth"
-	"github.com/Deirror/servette/config/env"
+	envcfg "github.com/Deirror/servette/config/env"
 	"github.com/Deirror/servette/env"
 )
 

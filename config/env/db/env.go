@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/Deirror/servette/env"
-	"github.com/Deirror/servette/config/env"
+	envcfg "github.com/Deirror/servette/config/env"
 	"github.com/Deirror/servette/domain/db"
 )
 
