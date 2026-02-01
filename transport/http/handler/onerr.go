@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/Deirror/servette/encoding/json"
-	"github.com/Deirror/servette/transport/error"
+	"github.com/Deirror/servette/transport/err"
 )
 
 // Can be used in Wrap func as default one
